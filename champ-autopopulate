@@ -1,0 +1,46 @@
+function champAutopopulate() {
+  
+  // set the sheet where all the schools' CHAMPIONS data should autopoulate
+  
+  var ss = SpreadsheetApp.openById('1wwA6lk14FAx-8Dj3uOOEhz_BHukFAQiRtYOwMKpoFFI');
+  var champSheet = ss.setActiveSheet(ss.getSheetByName('CHAMPIONS AUTOPOPULATE'));
+  
+  // folder where all the schools' sheets are stored
+ 
+  var mainFolder = DriveApp.getFolderById('0B-Z7OUgXBAAbRFQxQVg1OFNDZEU');
+  var schoolSheets = mainFolder.getFiles();
+  
+  // other variables
+  
+  var fileId;
+  var file;
+  var sourceBook;
+  var sourceSheet;
+  var startRow = 2;
+  var numRow;
+  var startCol = 1;
+  var numCol = 13;
+  var sourceRange;
+  var sourceValues;
+  var destValues;
+  
+  // autopopulate the ERC tab
+  
+  champSheet.clearContents();
+  champSheet.appendRow(['School Name', 'First Name', 'Last Name', 'Relationship', 'Scholar First Name', 'Scholar Last Name', 'Cell Phone', 'Email Address', 'Street Address', 'NYS Assembly District', 'NYC Council District', 'NYS Senate District', 'Notes']);
+  
+  
+  while(schoolSheets.hasNext()) {
+    fileId = schoolSheets.next().getId();
+    file = SpreadsheetApp.openById(fileId);
+    sourceSheet = file.setActiveSheet(file.getSheetByName('Champions'));
+    numRow = sourceSheet.getLastRow();
+    sourceRange = sourceSheet.getRange(startRow, startCol, numRow, numCol);
+    sourceValues = sourceRange.getValues();
+    
+    champSheet.getRange(champSheet.getLastRow()+1, startCol, numRow, numCol).setValues(sourceValues);
+    
+    
+  }
+  
+}
