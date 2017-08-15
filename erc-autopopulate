@@ -16,13 +16,14 @@ function ercAutopopulate() {
   var file;
   var sourceBook;
   var sourceSheet;
-  var startRow = 2;
+  var startRow = 3;
   var numRow;
   var startCol = 1;
   var numCol = 13;
   var sourceRange;
   var sourceValues;
   var destValues;
+  var sheetName;
   
   // autopopulate the ERC tab
   
@@ -33,12 +34,16 @@ function ercAutopopulate() {
   while(schoolSheets.hasNext()) {
     fileId = schoolSheets.next().getId();
     file = SpreadsheetApp.openById(fileId);
-    sourceSheet = file.setActiveSheet(file.getSheetByName('ERC'));
-    numRow = sourceSheet.getLastRow();
-    sourceRange = sourceSheet.getRange(startRow, startCol, numRow, numCol);
+    sheetName = file.getName();
+    sourceSheet = file.setActiveSheet(file.getSheetByName('Ed Reform Council'));
+    numRow = sourceSheet.getLastRow()-startRow;
+    sourceRange = sourceSheet.getRange(startRow, startCol, numRow+1, numCol);
     sourceValues = sourceRange.getValues();
     
-    ercSheet.getRange(ercSheet.getLastRow()+1, startCol, numRow, numCol).setValues(sourceValues);
+    var i = ercSheet.getLastRow()+1
+    ercSheet.getRange(i, startCol+1, numRow+1, numCol).setValues(sourceValues);
+    SpreadsheetApp.flush();
+    ercSheet.getRange(i, startCol, numRow+1, 1).setValue(sheetName);
     
     
   }
